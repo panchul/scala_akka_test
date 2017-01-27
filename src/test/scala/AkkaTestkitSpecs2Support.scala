@@ -12,7 +12,7 @@ abstract class AkkaTestkitSpecs2Support(_system: ActorSystem) extends TestKit(_s
 	with ImplicitSender {
 
 	def this() = this(ActorSystem(
-		"XiIntegrateSpecs",
+		"ThingieProcessorSpecs",
 		ConfigFactory.parseString("""
         akka.loggers = ["akka.testkit.TestEventListener"]
         akka.logger-startup-timeout = 30s

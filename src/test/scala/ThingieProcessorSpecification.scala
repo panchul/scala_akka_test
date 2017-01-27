@@ -32,7 +32,8 @@ class ThingieProcessorSpecification extends Specification
 	def testThingieWorksParametrized(useGen: Gen[(Int, Int)]) = {
 		new AkkaTestkitSpecs2Support {
 			within(5 second) {
-				Prop.forAll(useGen) { case (first: Int, second: Int) =>
+				//Prop.forAll(useGen) { case (first: Int, second: Int) =>
+					Prop.forAll(Gen.oneOf(Seq((1, 2)))) { case (first: Int, second: Int) =>
 					//				1 must beEqualTo(2)
 					first must beEqualTo(second)
 				}
