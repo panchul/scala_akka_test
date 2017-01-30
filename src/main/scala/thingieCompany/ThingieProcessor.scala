@@ -12,15 +12,10 @@ object ThingieProcessor {
 class ThingieProcessor extends Actor with ActorLogging {
 
 	override def receive = {
-		//case msg => {
-			case "hi" => {
-				println(s"""[TRACE] DemoActor: gottttt \"hi\" """)
-				println(s"""[TRACE] DemoActor: sender is \"$sender\" """)
-				sender ! "hi" ++" dear"
-			}
-			case msg =>
+			case msg:String => {
 				println(s"""[TRACE] DemoActor: got \"$msg\" """)
 				println(s"""[TRACE] DemoActor: sender is \"$sender\" """)
-
+				sender ! msg ++ " dear"
+			}
 	}
 }

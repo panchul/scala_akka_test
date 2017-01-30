@@ -2,7 +2,7 @@ import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestActors, TestKitBase}
 import com.typesafe.config.ConfigFactory
-import org.scalacheck._
+import org.scalacheck.{Gen, _}
 import org.specs2.ScalaCheck
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.Specification
@@ -11,14 +11,6 @@ import thingieCompany.ingest.ThingieProcessor
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 import scala.concurrent.ExecutionContext.Implicits.global
-
-//class ThingieProcessor extends Actor {
-//	override def receive: Receive = {
-//		case "hi" => sender() ! "hi dear"
-//			println("got mess hi")
-//		case _ => unhandled("Unhandled")
-//	}
-//}
 
 class ThingieProcessor2Specification extends Specification
 	with ThrownExpectations
@@ -31,11 +23,13 @@ class ThingieProcessor2Specification extends Specification
 	implicit def arbitraryAkka: Arbitrary[Akka] =
 		Arbitrary(Gen.const(Akka()))
 
-	val thingieGen: Gen[(String, String)] = Gen.oneOf(Seq(("hi", "hi dear")))
+	val thingieGen: Gen[(String, String)] = Gen.oneOf(Seq(("hi", "hi dear"),("bye", "bye dear")))
 	var didTheThingie2 = 0
 	var myActor2: ActorRef = null
 
-	val testThingieWorks2 = prop { (t:Tuple2[String,String], akka: Akka) =>
+	val testThingieWorks2 = myfunc(thingieGen)
+
+	def myfunc(myGen:Gen[(String, String)]) = prop { (t:Tuple2[String,String], akka: Akka) =>
 		import akka._ ; akka {
 		within(20.seconds)
 		{
@@ -59,10 +53,10 @@ class ThingieProcessor2Specification extends Specification
 
 			// success
 
-			ok.not.not
+			ok
 		}
 	}
-	}.setGen1(thingieGen)
+	}.setGen1(myGen)
 
 }
 
