@@ -6,18 +6,18 @@ import org.scalacheck.{Gen, _}
 import org.specs2.ScalaCheck
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.Specification
-import thingieCompany.ingest.ThingieProcessor
+import thingieCompany.ingest.ThingieProcessorActor
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ThingieProcessor2Specification extends Specification
+class ThingieProcessorActor2Specification extends Specification
 	with ThrownExpectations
 	with ScalaCheck
 {
 	def is = s2"""
-  Test thingie2 test2 $testThingieWorks2
+  Test with Generators using ThingieProcessor2Specification $testThingieWorks2
 """
 
 	implicit def arbitraryAkka: Arbitrary[Akka] =
@@ -29,33 +29,35 @@ class ThingieProcessor2Specification extends Specification
 
 	val testThingieWorks2 = myfunc(thingieGen)
 
-	def myfunc(myGen:Gen[(String, String)]) = prop { (t:Tuple2[String,String], akka: Akka) =>
-		import akka._ ; akka {
-		within(20.seconds)
-		{
-			val demo= system.actorOf(Props[ThingieProcessor])
+	def myfunc(myGen:Gen[(String, String)]) = prop {
+		(t:Tuple2[String,String], akka: Akka) =>
+			import akka._ ;
+			akka {
+				within(20.seconds) {
 
-			println(s"""[TRACE] Gen TestKit: demo is $demo""")
-			val msg_send = t._1 //"hi"
-		val msg_recv = t._2 //"hi dear"
+					val demo= system.actorOf(Props[ThingieProcessorActor])
 
-			//demo! msg_send
-			//demo ! (msg_send)(testActor)
-			send(demo, msg_send)
+					println(s"""[TRACE from myfunc()] Gen TestKit: demo is $demo""")
+					val msg_send = t._1 //"hi"
+					val msg_recv = t._2 //"hi dear"
 
-			println(s"""[TRACE] Gen TestKit: sent \"$msg_send\" to $demo""")
+					//demo! msg_send
+					//demo ! (msg_send)(testActor)
+					send(demo, msg_send)
 
-			println(s"""[TRACE] Gen TestKit: expecting \"$msg_recv\"... """)
+					println(s"""[TRACE from myfunc()] Gen TestKit: sent \"$msg_send\" to $demo""")
 
-			expectMsg(10.second, msg_recv)
+					println(s"""[TRACE from myfunc()] Gen TestKit: expecting \"$msg_recv\"... """)
 
-			println(s"""[TRACE] Gen TestKit: after expectMsg """)
+					expectMsg(10.second, msg_recv)
 
-			// success
+					println(s"""[TRACE from myfunc()] Gen TestKit: after expectMsg """)
 
-			ok
-		}
-	}
+					// success
+
+					ok
+				}
+			}
 	}.setGen1(myGen)
 
 }

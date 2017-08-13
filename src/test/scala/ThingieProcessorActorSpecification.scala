@@ -14,13 +14,13 @@ import org.specs2.specification.BeforeAfterAll
 import scala.util.Random
 import scala.concurrent.duration._
 
-class ThingieProcessorSpecification extends Specification
+class ThingieProcessorActorSpecification extends Specification
 	with ThrownExpectations
 	with ScalaCheck{
 
 	override def is =
 		s2"""
-       Test thingie $testThingieWorks
+       Test thingie using Gens $testThingieWorks
     """
 
 	val thingieGen: Gen[(Int, Int)] = Gen.oneOf(Seq((1, 2)))

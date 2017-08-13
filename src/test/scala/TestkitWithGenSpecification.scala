@@ -3,7 +3,7 @@ import akka.actor.Actor
 import akka.actor.Props
 import akka.testkit.{ImplicitSender, TestKit}
 import org.specs2.mutable.SpecificationLike
-import thingieCompany.ingest.ThingieProcessor
+import thingieCompany.ingest.ThingieProcessorActor
 import org.scalacheck.{Gen, Prop, Shrink}
 import org.specs2.execute
 import org.specs2.execute.AsResult
@@ -48,8 +48,8 @@ class TestkitWithGenSpecification extends TestKit(ActorSystem())
 //			}
 //		}
 
-		"Bounce off messages incorrectly" in {
-			val demo = system.actorOf(Props[ThingieProcessor],"test-actor")
+		"Test with hardcoded values in TestkitWithGenSpecification" in {
+			val demo = system.actorOf(Props[ThingieProcessorActor],"test-actor")
 			val msg_send = "hi"
 			val msg_recv = "hi dear"
 			demo ! msg_send
